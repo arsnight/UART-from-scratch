@@ -2,7 +2,7 @@
 UART implementation with the transmitter and receiver modules written separately from scratch using verilog. Focusing on FSM design, baud rate generation and oversampling.
 Each module was designed independently with an attempted IP-core–style architecture, allowing for modular development and easier integration into the final duplex UART system.
 
-# UART-TX-from-scratch
+# UART-TX design
 UART Transmitter (TX) implemented in Verilog from scratch, focusing on FSM design, baud rate generation and a testbench for verification.
 
 ## Features
@@ -276,7 +276,7 @@ Implement UART RX, Combine TX + RX and build full UART module.
 5. System-Level Integration :
 This UART module will eventually become part of larger systems such as a custom CPU, VGA terminal, FPGA operating terminal and many more.
 
-# UART-RX-from-scratch
+# UART-RX design
 UART Receiver (RX) implemented in Verilog using an unconventional 28× oversampled clock. Designed from scratch with mid-bit sampling, edge-triggered bit capture, and a fully synchronous FSM, without reliance on external IP cores
 
 ## Features
