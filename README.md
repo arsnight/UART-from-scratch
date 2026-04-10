@@ -259,22 +259,6 @@ Although UART TX appears simple, this project required understanding:
 
 This reinforced that even small modules can provide significant learning value.
 
-## Future Scalability
-
-1. Parameterizable Baud Rate :
-The Current design is limited to baud rate 115200 and a 100 MHz master clock, However future improvements can be made to introduce parameterized baud rate generator and master clock frequency.
-
-2. Configurable Data Length :
-Currently, my design can only accomodate for 8 bits of data. However the design is done keeping the scalability to 5-9 bits depending on the needs.
-
-3. Parity bit :
-Currently, Parity bit is not included, however I plan to implement even, odd parity and an optional parity enable feature.
-
-4. Integration with UART RX module :
-Implement UART RX, Combine TX + RX and build full UART module.
-
-5. System-Level Integration :
-This UART module will eventually become part of larger systems such as a custom CPU, VGA terminal, FPGA operating terminal and many more.
 
 # UART-RX design
 UART Receiver (RX) implemented in Verilog using an unconventional 28× oversampled clock. Designed from scratch with mid-bit sampling, edge-triggered bit capture, and a fully synchronous FSM, without reliance on external IP cores
@@ -461,3 +445,19 @@ module UART_RX(
    
 endmodule
 ```
+## Future Scalability
+
+1. Parameterizable Baud Rate :
+The Current design is limited to baud rate 115200 and a 100 MHz master clock, However future improvements can be made to introduce parameterized baud rate generator and master clock frequency.
+
+2. Configurable Data Length :
+Currently, my design can only accomodate for 8 bits of data. However the design is done keeping the scalability to 5-9 bits depending on the needs.
+
+3. Parity bit :
+Currently, Parity bit is not included, however I plan to implement even, odd parity and an optional parity enable feature.
+
+4. Integration with UART RX module :
+Implement UART RX, Combine TX + RX and build full UART module.
+
+5. System-Level Integration :
+This UART module will eventually become part of larger systems such as a custom CPU, VGA terminal, FPGA operating terminal and many more.
