@@ -457,7 +457,7 @@ Currently, my design can only accomodate for 8 bits of data. However the design 
 Currently, Parity bit is not included, however I plan to implement even, odd parity and an optional parity enable feature.
 
 4. Integration with UART RX module :
-Implement UART RX, Combine TX + RX and build full UART module.
+Using the implemented UART RX to integrate TX and RX and build a full UART module.
 
 5. System-Level Integration :
 This UART module will eventually become part of larger systems such as a custom CPU, VGA terminal, FPGA operating terminal and many more.
