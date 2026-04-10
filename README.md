@@ -1,5 +1,6 @@
 # UART-from-scratch
 UART implementation with the transmitter and receiver modules written separately from scratch using verilog. Focusing on FSM design, baud rate generation and oversampling.
+Each module was designed independently with an attempted IP-core–style architecture, allowing for modular development and easier integration into the final duplex UART system.
 
 # UART-TX-from-scratch
 UART Transmitter (TX) implemented in Verilog from scratch, focusing on FSM design, baud rate generation and a testbench for verification.
@@ -15,7 +16,7 @@ Planned architecture:
 - Baud rate generator
 - Data storage
 
-As a beginner to the field of verilog, a lot in this project was just me switching from the "software" thinking to the hardware thinking. After reviewing the theory and concepts regarding a complete UART module, I decided to start with a transmitter module first as that felt easier than the receiver (And indeed it was!)
+A lot in this project was just me switching from the "software" thinking to the hardware thinking. After reviewing the theory and concepts regarding a complete UART module, I decided to start with a transmitter module first as that felt easier than the receiver (And indeed it was!)
 
 The first step in this project was to assume the input data is going to be received to the tx (transmitter) module in parallel form. This usually just meant instead of bit by bit input, the inputs will be a collection of bits instead (better called bytes). Example for the alphabet A, the parallel input would be 01000001. Hence, we need to store this data somewhere because if we use it raw, data can change and then the tx module will just output a bunch of gibberish.
 
