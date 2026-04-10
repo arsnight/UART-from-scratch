@@ -282,7 +282,7 @@ UART Receiver (RX) implemented in Verilog using an unconventional 28× oversampl
 
 ## Design Flow
 
-Started on the Receiver module right after the tx, the approach here is a bit more complicated than the latter. There are many ways to write the RX, but it all narrows to either using the baud rate tick method as used in TX or a new technique called Oversampling.
+Started on the Receiver module right after the tx, the approach here is a bit more complicated than the transmitter. There are many ways to write the RX, but it all narrows to either using the baud rate tick method as used in TX or a new method called Oversampling.
 
 The basic gist of oversampling is rather simple. Instead of sampling once every 868 clk cycles(for the standard baud rate 115200 and 100MHz master clock), we instead sample multiple times over the course of 868 cycles. This allows to use one of the samples to attain any part of our serial input, most commonly the exact mid part of the serial input is sampled. Mid bit sampling is very good as it prevents sampling during transitions and preventing data corruption.
 
@@ -468,3 +468,31 @@ Using the implemented UART RX to integrate TX and RX and build a full UART modul
 
 5. System-Level Integration :
 This UART module will eventually become part of larger systems such as a custom CPU, VGA terminal, FPGA operating terminal and many more.
+
+# UART-duplex design
+Using the eariler designed independent modules, It was rather easy to make the integrated duplex and perform a simulation. Just introduce the TX and RX designed as sub modules and initialize them into the top module:
+```verilog
+module UART_main(
+    input clk,
+    input [7:0] parallel_in,
+    input start_tx,
+    output [7:0] parallel_out
+    );
+    
+    wire serial_out;
+    
+    UART_TX Transmitter(
+        .clk(clk),
+        .parallel_in(parallel_in),
+        .start_tx(start_tx),
+        .serial_out(serial_out)
+        );
+            
+    UART_RX Receiver(
+        .clk(clk),
+        .serial_out(serial_out),
+        .parallel_out(parallel_out)
+        );
+endmodule
+```
+The problem arised at the stage of actual hardware implementation. Numerous bugs as timing mismatch, not properly accomadating for multiple inputs and many others came up one after the other. So I decided to break each module down and design it from scratch again, with heavy influence on actual hardware application rather than simulation.
