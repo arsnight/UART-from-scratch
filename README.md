@@ -495,4 +495,9 @@ module UART_main(
         );
 endmodule
 ```
-The problem arised at the stage of actual hardware implementation. Numerous bugs as timing mismatch, not properly accomadating for multiple inputs and many others came up one after the other. So I decided to break each module down and design it from scratch again, with heavy influence on actual hardware application rather than simulation.
+While Simulation results appeared correct, the problem arised at the stage of actual hardware implementation. Problems such as timing mismatches, improper handling of consecutive inputs, and synchronization inconsistencies became apparent.
+To address these issues, I shifted the design approach from simulation-focused development to hardware-oriented refinement. Each module was revisited and redesigned with stronger emphasis on:
+-Synchronous design practices
+-Timing reliability
+-Hardware stability
+-Real FPGA deployment considerations
