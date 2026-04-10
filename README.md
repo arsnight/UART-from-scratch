@@ -9,6 +9,14 @@ This project implements a UART Transmitter and Receiver entirely from scratch in
 
 The transmitter and receiver were designed independently and later integrated into a full duplex UART system.
 
+The basic working can be described as:
+```
+
+parallel_in ──► UART_TX ──► serial_out ──► UART_RX ──► parallel_out
+                   │                          │
+                baud_gen                oversampled_clk
+```
+
 # UART-TX design
 UART Transmitter (TX) implemented in Verilog from scratch, focusing on FSM design, baud rate generation and a testbench for verification.
 
