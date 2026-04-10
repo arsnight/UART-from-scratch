@@ -1,6 +1,13 @@
-# UART-from-scratch
-UART implementation with the transmitter and receiver modules written separately from scratch using verilog. Focusing on FSM design, baud rate generation and oversampling.
-Each module was designed independently with an attempted IP-core–style architecture, allowing for modular development and easier integration into the final duplex UART system.
+# UART From Scratch — Full Duplex UART Design
+
+This project implements a UART Transmitter and Receiver entirely from scratch in Verilog, with a focus on:
+
+- FSM-based architecture
+- Fully synchronous design
+- baud rate generation
+- oversampling receiver
+
+The transmitter and receiver were designed independently and later integrated into a full duplex UART system.
 
 # UART-TX design
 UART Transmitter (TX) implemented in Verilog from scratch, focusing on FSM design, baud rate generation and a testbench for verification.
