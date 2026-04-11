@@ -509,3 +509,11 @@ To address these issues, I shifted the design approach from simulation-focused d
 -Timing reliability
 -Hardware stability
 -Real FPGA deployment considerations
+
+
+## Design Weaknesses Upto This Point:
+No parity bit.
+UART_RX missing data valid signal — parallel_out just silently updates. The receiver has no way to tell the downstream logic "new byte is ready." Needs a data_valid strobe.
+Start_tx edge detection is fragile — If start_tx is held high, you'll only get one transmission. If it glitches, you could get spurious transmissions. A more robust handshake (e.g., valid/ready) would be better. 
+STOP_RX doesn't validate the stop bit — You transition to IDLE regardless of whether sync2 == 1. A real implementation should flag a framing error if the stop bit is 0.
+Magic numbers everywhere — 5'd14, 5'd27, 10'd867, 5'd30 should be localparams with descriptive names. This makes the baud rate completely opaque and hard to change.
