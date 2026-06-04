@@ -214,7 +214,7 @@ module uart_tx_fsm(
 endmodule
 ```
 
-##Parameterising the design
+## Parameterising the design
 
 Following the aim for this project, to make an IP core worthy UART design, I moved on to parameterise the tx module.
 Started with the master clock frequency, baud rate, Input bit count and number of states for the fsm to account for parity bits in the future if needed.
