@@ -214,6 +214,20 @@ module uart_tx_fsm(
 endmodule
 ```
 
+##Parameterising the design
+
+Following the aim for this project, to make an IP core worthy UART design, I moved on to parameterise the tx module.
+Started with the master clock frequency, baud rate, Input bit count and number of states for the fsm to account for parity bits in the future if needed.
+```verilog
+module UART_TX #(
+    parameter CLK_FREQ = 100_000_000,
+    parameter BAUD_RATE = 115200,
+    parameter BIT_COUNT = 8,
+    parameter NUM_STATES = 4 //
+)
+```
+Then following this design decision, modified several magic numbers to parameter math instead.
+
 ## Learned Experiences
 
 1. Hardware ≠ Software Thinking
@@ -274,8 +288,7 @@ Although UART TX appears simple, this project required understanding:
 
 This reinforced that even small modules can provide significant learning value.
 
-
-# UART-RX design
+#UART-RX design
 UART Receiver (RX) implemented in Verilog using an unconventional 28× oversampled clock. Designed from scratch with mid-bit sampling, edge-triggered bit capture, and a fully synchronous FSM, without reliance on external IP cores
 
 ## Features
