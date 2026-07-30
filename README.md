@@ -530,3 +530,55 @@ UART_RX missing data valid signal — parallel_out just silently updates. The re
 Start_tx edge detection is fragile — If start_tx is held high, you'll only get one transmission. If it glitches, you could get spurious transmissions. A more robust handshake (e.g., valid/ready) would be better. 
 STOP_RX doesn't validate the stop bit — You transition to IDLE regardless of whether sync2 == 1. A real implementation should flag a framing error if the stop bit is 0.
 Magic numbers everywhere — 5'd14, 5'd27, 10'd867, 5'd30 should be localparams with descriptive names. This makes the baud rate completely opaque and hard to change.
+
+
+## Design Evolution
+
+# Version 1 – Functional UART TX
+
+The first implementation focused entirely on obtaining a working UART transmitter.
+
+Features:
+- Fixed 100 MHz clock
+- Fixed 115200 baud
+- 8-bit transmission
+- Four-state FSM
+- Verified in simulation
+
+Although functionally correct, the design contained several hard-coded values
+and was not intended for reuse.
+
+---
+
+# Version 2 – Parameterized Architecture
+
+After verifying the transmitter in simulation and hardware, the design was
+refactored to improve scalability.
+
+Changes:
+- Parameterized master clock frequency
+- Parameterized baud rate
+- Parameterized data width
+- Parameterized FSM state width
+- Replaced magic numbers with parameter arithmetic
+- Used `$clog2()` to automatically size counters
+
+These changes allow the same UART transmitter RTL to be reused across different
+FPGA boards and communication settings with minimal modification.
+
+---
+
+# Version 3 – Hardware Robustness
+
+Testing on real hardware revealed that a one-clock `edge_detect` pulse could be
+missed because the FSM only sampled requests on baud ticks.
+
+The design was updated to include:
+
+- `start_pending` request register
+- Robust transmit handshake
+- Prevention of missed transmit requests
+- Improved synchronization between control logic and baud timing
+
+This version more closely reflects how production FPGA IP cores handle command
+requests.
