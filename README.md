@@ -550,7 +550,7 @@ and was not intended for reuse.
 
 ---
 
-# Version 2 – Parameterized Architecture
+# Version 2 – Parameterized Architecture For Transmitter
 
 After verifying the transmitter in simulation and hardware, the design was
 refactored to improve scalability.
@@ -568,7 +568,7 @@ FPGA boards and communication settings with minimal modification.
 
 ---
 
-# Version 3 – Hardware Robustness
+# Version 2.1 – Timing Fixes
 
 Testing on real hardware revealed that a one-clock `edge_detect` pulse could be
 missed because the FSM only sampled requests on baud ticks.
