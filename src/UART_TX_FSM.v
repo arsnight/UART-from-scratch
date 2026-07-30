@@ -32,17 +32,12 @@ module uart_tx_fsm#(
                 counter <= 0;
             end
             else begin
-            if (rst) begin
-                start_pending <= 0;
-            end
-            else begin
-                if (edge_detect) begin
+                if (edge_detect && !TX_busy) begin
                     start_pending <= 1;
                 end
                 else if(tick && state == IDLE && start_pending) begin
                     start_pending <= 0;
-                end
-            end           
+                end           
             if (tick) begin
                 serial_out <= 1; //Moore FSM default init
                 
