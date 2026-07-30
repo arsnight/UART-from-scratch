@@ -15,6 +15,7 @@ module uart_tx_fsm#(
     localparam STATE_WIDTH = $clog2(NUM_STATES + 1); 
     reg [STATE_WIDTH-1:0] state = 0; //parameterized state width too for future scaling, accomodating parity bit state
     reg [BIT_WIDTH-1:0] counter = 0;
+    reg start_pending = 0; // Latches the transmit request since edge_detect is only one clock cycle wide
     
     localparam [STATE_WIDTH-1:0] IDLE = 0;  // Specifying state width to avoid defaulting it's bit size to 32
     localparam [STATE_WIDTH-1:0] START_BIT = 1;
@@ -26,10 +27,22 @@ module uart_tx_fsm#(
     always @(posedge clk) begin
             if (rst) begin //Added synchronous reset however may add asynchronous assert synchronous release in the future instead
                 serial_out <= 1;
+                start_pending <= 0;
                 state <= IDLE;
                 counter <= 0;
             end
-            else begin            
+            else begin
+            if (rst) begin
+                start_pending <= 0;
+            end
+            else begin
+                if (edge_detect) begin
+                    start_pending <= 1;
+                end
+                else if(tick && state == IDLE && start_pending) begin
+                    start_pending <= 0;
+                end
+            end           
             if (tick) begin
                 serial_out <= 1; //Moore FSM default init
                 
@@ -42,7 +55,7 @@ module uart_tx_fsm#(
                     
                     IDLE: begin
                         serial_out <= 1;
-                        if (edge_detect) begin
+                        if (start_pending) begin
                             state <= START_BIT;
                         end
                     end
