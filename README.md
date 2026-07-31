@@ -582,3 +582,20 @@ The design was updated to include:
 
 This version more closely reflects how production FPGA IP cores handle command
 requests.
+
+---
+
+# Version 3 – Parameterized Architecture For Receiver
+
+After verifying the Receiver in simulation and hardware, the design was
+refactored to improve scalability.
+
+Changes:
+- Replaced magic numbers with parameter arithmetic
+- Used `$clog2()` to automatically size counters
+- Added a top reset port to match the TX design
+
+These changes allow the same UART Receiver RTL to be reused across different
+FPGA boards and communication settings with minimal modification.
+
+---
