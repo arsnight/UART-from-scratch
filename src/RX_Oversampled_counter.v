@@ -1,11 +1,15 @@
-module Oversampled_counter(
+module Oversampled_counter #(
+    parameter OVERSAMPLING_RATE = 28
+)(
     input clk,
     input rst_trigger,
-    output reg [4:0] counter = 0
+    output reg [$clog2(OVERSAMPLING_RATE + 1) - 1:0] counter = 0
 );
 
     wire tick;
-
+    localparam width = $clog2(OVERSAMPLING_RATE + 1); // Obtained the width of the parameter
+    localparam [width-1:0] Matched_rate = OVERSAMPLING_RATE - 1; //forced a 32 bit constant down to the required bit width
+    
     oversampled_clk clk_tick(
         .clk(clk),
         .rst_trigger(rst_trigger),
@@ -19,7 +23,7 @@ module Oversampled_counter(
             counter <= 0;           
         end
         else if (tick) begin
-           if (counter == 5'd27) begin
+           if (counter == Matched_rate) begin
                 counter <= 0;
            end
            else begin
