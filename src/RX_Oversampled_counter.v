@@ -1,4 +1,6 @@
 module Oversampled_counter #(
+    parameter CLK_FREQ = 100_000_000,
+    parameter BAUD_RATE = 115200,
     parameter OVERSAMPLING_RATE = 28
 )(
     input clk,
@@ -10,7 +12,11 @@ module Oversampled_counter #(
     localparam width = $clog2(OVERSAMPLING_RATE + 1); // Obtained the width of the parameter
     localparam [width-1:0] Matched_rate = OVERSAMPLING_RATE - 1; //forced a 32 bit constant down to the required bit width
     
-    oversampled_clk clk_tick(
+    oversampled_clk #(
+        .CLK_FREQ(CLK_FREQ),
+        .BAUD_RATE(BAUD_RATE),
+        .OVERSAMPLING_RATE(OVERSAMPLING_RATE)
+    )clk_tick(
         .clk(clk),
         .rst_trigger(rst_trigger),
         .tick(tick)
