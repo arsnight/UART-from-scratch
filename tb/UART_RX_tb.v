@@ -19,10 +19,6 @@ UART_RX dut(
 );
 
 
-wire [2:0] state = dut.state;
-wire [4:0] counter = dut.counter;
-wire [2:0] count = dut.count;
-wire rst_trigger = dut.rst_trigger;
 
 
 task send_bit;
@@ -61,10 +57,7 @@ end
 endtask
 
 
-initial begin
-$monitor("Time=%0t | state=%0d | counter=%0d | count=%0d | parallel_out=%h",
-$time, state, counter, count, parallel_out);
-end
+
 
 
 initial begin
@@ -79,7 +72,7 @@ initial begin
 serial_out = 1;
 repeat(2000) @(posedge clk);
 
-send_byte(8'hAA);
+send_byte(8'h77);
 
 repeat(5000) @(posedge clk);
 
