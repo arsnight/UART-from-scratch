@@ -1,6 +1,8 @@
 `timescale 1ns / 1ps
 
 module UART_RX #(
+    parameter CLK_FREQ = 100_000_000,
+    parameter BAUD_RATE = 115200,
     parameter BIT_COUNT = 8,
     parameter NUM_STATES = 4,
     parameter OVERSAMPLING_RATE = 28,
@@ -29,7 +31,11 @@ module UART_RX #(
     localparam DATA_RX = 2;
     localparam STOP_RX = 3;
     
-    Oversampled_counter clk_counter(
+    Oversampled_counter #(
+        .CLK_FREQ(CLK_FREQ),
+        .BAUD_RATE(BAUD_RATE),
+        .OVERSAMPLING_RATE(OVERSAMPLING_RATE)
+    )clk_counter(
         .clk(clk),
         .rst_trigger(rst_trigger),
         .counter(counter)
