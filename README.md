@@ -1,4 +1,4 @@
-# UART From Scratch — Full Duplex UART Design
+# UART From Scratch
 
 This project implements a UART Transmitter and Receiver entirely from scratch in Verilog, with a focus on:
 
