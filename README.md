@@ -26,7 +26,7 @@ UART Transmitter (TX) implemented in Verilog from scratch, focusing on FSM desig
 - Fully synchronous design
 - Testbench verification
 
-# Day 1 - Design
+# Initial Design
 Planned architecture:
 - Baud rate generator
 - Data storage
@@ -120,7 +120,7 @@ lead to timing issues.
 Instead, a single global clock should be used throughout the design, while 
 the baud tick is used as a **clock enable** signal:
 
-# Day 2 - FSM
+# FSM
 Planned architecture:
 - Finite State Machine
 
@@ -490,32 +490,6 @@ Using the implemented UART RX to integrate TX and RX and build a full UART modul
 5. System-Level Integration :
 This UART module will eventually become part of larger systems such as a custom CPU, VGA terminal, FPGA operating terminal and many more.
 
-# UART-duplex design
-Using the eariler designed independent modules, It was rather easy to make the integrated duplex and perform a simulation. Just introduce the TX and RX designed as sub modules and initialize them into the top module:
-```verilog
-module UART_main(
-    input clk,
-    input [7:0] parallel_in,
-    input start_tx,
-    output [7:0] parallel_out
-    );
-    
-    wire serial_out;
-    
-    UART_TX Transmitter(
-        .clk(clk),
-        .parallel_in(parallel_in),
-        .start_tx(start_tx),
-        .serial_out(serial_out)
-        );
-            
-    UART_RX Receiver(
-        .clk(clk),
-        .serial_out(serial_out),
-        .parallel_out(parallel_out)
-        );
-endmodule
-```
 While Simulation results appeared correct, the problem arised at the stage of actual hardware implementation. Problems such as timing mismatches, improper handling of consecutive inputs, and synchronization inconsistencies became apparent.
 To address these issues, I shifted the design approach from simulation-focused development to hardware-oriented refinement. Each module was revisited and redesigned with stronger emphasis on:
 -Synchronous design practices
@@ -523,14 +497,12 @@ To address these issues, I shifted the design approach from simulation-focused d
 -Hardware stability
 -Real FPGA deployment considerations
 
-
 ## Design Weaknesses Upto This Point:
 No parity bit.
 UART_RX missing data valid signal — parallel_out just silently updates. The receiver has no way to tell the downstream logic "new byte is ready." Needs a data_valid strobe.
-Start_tx edge detection is fragile — If start_tx is held high, you'll only get one transmission. If it glitches, you could get spurious transmissions. A more robust handshake (e.g., valid/ready) would be better. 
-STOP_RX doesn't validate the stop bit — You transition to IDLE regardless of whether sync2 == 1. A real implementation should flag a framing error if the stop bit is 0.
-Magic numbers everywhere — 5'd14, 5'd27, 10'd867, 5'd30 should be localparams with descriptive names. This makes the baud rate completely opaque and hard to change.
-
+Start_tx edge detection is fragile — If start_tx is held high, you'll only get one transmission. If it glitches, you could get spurious transmissions. A more robust handshake (e.g., valid/ready) would be better. (FIXED)
+STOP_RX doesn't validate the stop bit — You transition to IDLE regardless of whether sync2 == 1, should flag a framing error if the stop bit is 0.
+Magic numbers everywhere — 5'd14, 5'd27, 10'd867, 5'd30 should be localparams with descriptive names. This makes the baud rate completely opaque and hard to change. (FIXED)
 
 ## Design Evolution
 
