@@ -571,3 +571,17 @@ These changes allow the same UART Receiver RTL to be reused across different
 FPGA boards and communication settings with minimal modification.
 
 ---
+
+# Version 4 – Bug Fixing in Receiver Module
+
+- Fixed off-by-one in both the baud-tick divider and the oversample-counter wrap (-1 missing after parameterization) — this was the bug causing 0x77 to come back as 0xB7.
+- Fixed parameter propagation: CLK_FREQ/BAUD_RATE/OVERSAMPLING_RATE weren't passed down through Oversampled_counter → oversampled_clk, so submodules silently used their own defaults regardless of what was set at UART_RX. Added CLK_FREQ/BAUD_RATE as UART_RX parameters (previously absent) and wired #(...) overrides at both instantiation levels.
+- Fixed STATE_WIDTH incorrectly sharing DATA_WIDTH (sized off BIT_COUNT instead of NUM_STATES) — latent bug, would've silently wrapped state if states were ever added without also changing BIT_COUNT.
+- Added synchronous rst port, including count <= 0 in the reset path (missed on the first pass, added after review).
+- Split output into parallel_out (internal shift register, live bit-by-bit accumulator) and Received_Byte (actual output port, latched once per frame on STOP_RX completion) — fixed the "output isn't persistent" bug where the port was directly exposing the mid-assembly shift register.
+- Added Received_Byte <= 0 to the reset path so a mid-frame reset doesn't leave stale data on the output.
+
+# Version 5 – Self Checking Testbenches
+
+- RX: connected the previously-dangling rst port; added a genuine mid-frame reset-recovery test (interrupt a frame, reset, confirm Received_Byte clears then correctly latches the next byte) — confirmed via waveform.
+- TX: rebuilt from monitor-only to fully self-checking (check_byte validates data + start/stop bits, prints PASS/FAIL); added mid-transmission reset-recovery test; added a same-cycle "back-to-back" test (revealed as a race-condition non-test, since both requests landed simultaneously); replaced with a proper busy-request test — second start_tx pulse deliberately timed mid-frame, confirming the original byte transmits uncorrupted, the busy request is dropped, and the line stays idle afterward with no second frame.
