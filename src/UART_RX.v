@@ -11,7 +11,7 @@ module UART_RX #(
     input clk,
     input rst, //Added a reset port same as tx
     input serial_out,
-    output reg [BIT_COUNT-1:0] parallel_out = 0
+    output reg [BIT_COUNT-1:0] Received_Byte = 0
 ); 
     localparam STATE_WIDTH = $clog2(NUM_STATES + 1);
     localparam DATA_WIDTH = $clog2(BIT_COUNT + 1);
@@ -19,6 +19,7 @@ module UART_RX #(
     localparam COUNTER_WIDTH = $clog2(OVERSAMPLING_RATE + 1);
     localparam [COUNTER_WIDTH - 1:0] MID_BIT = MID_BIT_POSITION;
     
+    reg [BIT_COUNT-1:0] parallel_out = 0;
     reg [STATE_WIDTH - 1:0] state = 0;
     reg prev_serial_out = 1;
     reg [DATA_WIDTH - 1:0] count = 0;
@@ -46,6 +47,7 @@ module UART_RX #(
           rst_trigger <= 1;
           state <= IDLE;
           count <= 0;
+          Received_Byte <= 0;
        end else begin 
             rst_trigger <= 0;
             case(state)
@@ -80,6 +82,7 @@ module UART_RX #(
                         state <= IDLE;
                         count <= 0;
                         rst_trigger <= 1;
+                        Received_Byte <= parallel_out;
                     end               
                 end
                 default: state <= IDLE;
